@@ -16,6 +16,7 @@ const MaintenanceSchema =new Schema({
     },
     MaintenanceType:{
         type:String,
+        enum: ["Electricity", "Waterline","Elevator","Mechanical"],
         required:true
     },
     description:{

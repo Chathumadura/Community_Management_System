@@ -2,18 +2,13 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const ComplaintSchema =new Schema({
-    ComplaintID:{
-        type: String,
-        required:true
-    },
+  
     MaintenanceType:{
         type: String,
+        enum: ["Electricity", "Waterline","Elevator","Mechanical"],
         required:true
     },
-    ComplaintsType:{
-        type:String,
-        required:true
-    },
+
     StaffName:{
         type:String,
         required:true
