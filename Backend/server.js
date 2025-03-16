@@ -4,8 +4,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const app = express()
 const host = 'localhost';
-//const router = require('../BACKEND/routes/Anjana/router.js')
-//const router2 = require('../BACKEND/routes/KK/router.js')
+
 
 
 
@@ -33,10 +32,6 @@ const connect = async () => {
 };
 connect();
 
-/*app.use('/api', router);
-app.use('/api', router2);
-app.use('/', mainRouter);*/
-
 
 const server = app.listen(PORT, host, () => {
 
@@ -45,10 +40,7 @@ const server = app.listen(PORT, host, () => {
 });
 
 
-/*const advertisementRouter = require("./routes/Sasindu/Advertisement.js");
-app.use("/Advertisement", advertisementRouter);
 
-const stockRouter = require("./routes/Sasindu/Stock.js");
-app.use("/Stock", stockRouter);*/
-
+const userRouter = require("./src/routes/kavishka/user");
+app.use("/user", userRouter);
 
