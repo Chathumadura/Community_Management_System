@@ -1,17 +1,13 @@
 const router = require("express").Router();
-const Complaints = require("../models/Complaints");
+const Complaints = require("../../models/Samidi/Complaints.js");
 
 router.route("/add").post((req,res)=> {
-    const ComplaintID = req.body.ComplaintID;
     const MaintenanceType = req.body.MaintenanceType;
-    const ComplaintsType = req.body.ComplaintsType;
     const StaffName = req.body.StaffName;
     const CDescription = req.body.CDescription;
 
     const newComplaint = new Complaints ({
-        ComplaintID,
         MaintenanceType,
-        ComplaintsType,
         StaffName,
         CDescription,
         
@@ -24,7 +20,7 @@ router.route("/add").post((req,res)=> {
     })
 });
 
-    router.route("/").get((req,res)=> {
+    router.route("/get").get((req,res)=> {
         Complaints.find().then((Complaints)=>{
             res.json({success:true, Complaints});
         }).catch((err)=> {
@@ -36,10 +32,9 @@ router.route("/add").post((req,res)=> {
 
 router.route("/update/:id").put(async(req,res)=> {
     let ComplaintID = req.params.id;
-    const {MaintenanceType,ComplaintsType,StaffName,CDescription} = req.body;
+    const {MaintenanceType,StaffName,CDescription} = req.body;
     const updateComplaints= {
         MaintenanceType,
-        ComplaintsType,
         StaffName,
         CDescription,
     }

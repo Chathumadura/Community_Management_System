@@ -5,6 +5,7 @@ const cors = require('cors')
 const app = express()
 const host = 'localhost';
 const router = require('./src/routes/Samidi/Maintenance')
+const ComplaintsRouter = require('./src/routes/Samidi/Complaints')
 
 
 
@@ -35,6 +36,7 @@ connect();
 
 //samidi
 app.use('/Maintenance',router);
+app.use('/Complaints',ComplaintsRouter);
 
 const server = app.listen(PORT, host, () => {
 
