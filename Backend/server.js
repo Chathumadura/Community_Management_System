@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const app = express()
 const host = 'localhost';
+const router = require('./src/routes/Samidi/Maintenance')
 
 
 
@@ -32,6 +33,8 @@ const connect = async () => {
 };
 connect();
 
+//samidi
+app.use('/Maintenance',router);
 
 const server = app.listen(PORT, host, () => {
 
