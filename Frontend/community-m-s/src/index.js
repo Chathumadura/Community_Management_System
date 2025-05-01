@@ -17,6 +17,7 @@ import ComplaintsDetails from './Page/Complaints/ComplaintDetails.js';
 import UpdateComplaints from './Page/Complaints/UpdateComplaint.js';
 import MaintainDashboard from "./Page/MaintainDashboard/MaintainDashboard.js";
 import ComplaintsAdmin from "./components/Complaints/ComplaintsAdmin.js";
+import AboutUs from "./components/Samidi/AboutUs.js";
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -42,6 +43,7 @@ root.render(
       <Route path='/editComplaints/:itemId' element={<UpdateComplaints />} />
       <Route path='/ResidentDash' element={<MaintainDashboard />} />
       <Route path='/CDetailsAdminSide' element={<ComplaintsAdmin />} />
+      <Route path="/about" element={<AboutUs/>} />
       
 
 

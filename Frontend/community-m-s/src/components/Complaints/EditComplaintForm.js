@@ -119,7 +119,7 @@ return (
                     <label htmlFor="StaffName" className="form-label-m">Staff Name</label>
                     <input
                         type="text"
-                        className="form-inpu-m staff-name"
+                        className="form-input-m staff-name"
                         id="StaffName"
                         value={formData.StaffName}
                         onChange={handleChange}
