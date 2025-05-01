@@ -7,6 +7,8 @@ const host = 'localhost';
 const logger = require('./src/utils/logger');
 
 
+
+
 require('dotenv').config();
 const dotenv = require("dotenv");
 
@@ -48,7 +50,11 @@ const server = app.listen(PORT, host, () => {
 
 
 const userRoutes = require('./src/routes/Kavishka/userRouter');
+const Maintenanerouter = require('./src/routes/MaintenanceRoutes/Maintenance')
+const ComplaintsRouter = require('./src/routes/ComplaintsRoutes/Complaints')
 app.use('/api/users', userRoutes);
 
 
-
+//maintenance
+app.use('/Maintenance',Maintenanerouter);
+app.use('/Complaints',ComplaintsRouter);

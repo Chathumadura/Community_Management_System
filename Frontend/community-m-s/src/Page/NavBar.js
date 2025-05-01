@@ -69,7 +69,7 @@ function Navbar({ isLoggedIn, onLogout }) {
                 </span>
               </li>
               <li>
-                <Link to="/payments" className="dropdown-link" onClick={closeMenus}>
+                <Link to="/Maintenance" className="dropdown-link" onClick={closeMenus}>
                   Maintenance Request
                 </Link>
               </li>

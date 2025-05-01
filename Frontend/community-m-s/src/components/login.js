@@ -32,7 +32,7 @@ const Login = () => {
                 } else if (data.user.userType === "Staff") {
                     window.location.href = "/staff/dashboard";
                 } else if (data.user.userType === "Resident") {
-                    window.location.href = "/resident/dashboard";
+                    window.location.href = "ResidentDash";
                 } else {
                     window.location.href = "/dashboard";
                 }
