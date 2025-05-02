@@ -42,12 +42,12 @@
     },
     {
       "slotNumber": 9,
-      "status": "free",
+      "status": "occupied",
       "reservedForTime": "07:00"
     },
     {
       "slotNumber": 10,
-      "status": "free",
+      "status": "occupied",
       "reservedForTime": "07:00"
     },
     {
@@ -709,6 +709,24 @@
       "entryTime": "2025-05-02 15:14",
       "isActive": true,
       "createdAt": "2025-05-02T09:44:10.408Z"
+    },
+    {
+      "slot": 9,
+      "vehicleNumber": "ABC-1234",
+      "vehicleType": "Car",
+      "leavingTime": "2025-05-03 07:45:00",
+      "entryTime": "2025-05-02 17:03",
+      "isActive": true,
+      "createdAt": "2025-05-02T11:33:39.521Z"
+    },
+    {
+      "slot": 10,
+      "vehicleNumber": "ABC-1234",
+      "vehicleType": "Car",
+      "leavingTime": "2025-05-03 07:45:00",
+      "entryTime": "2025-05-02 18:03",
+      "isActive": true,
+      "createdAt": "2025-05-02T12:33:15.412Z"
     }
   ]
 }

@@ -1,3 +1,5 @@
+/* AttendanceForm.css */
+
 :root {
   --primary: #8a2be2;
   --primary-dark: #6a1b9a;
@@ -75,7 +77,14 @@
   box-shadow: 0 0 0 2px var(--primary-dark);
 }
 
-.qr-scannerRa::before {
+/* Scanner overlay effects */
+#qr-scanner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+#qr-scanner::before {
   content: '';
   position: absolute;
   top: 0;
@@ -87,7 +96,7 @@
   pointer-events: none;
 }
 
-.qr-scannerRa::after {
+#qr-scanner::after {
   content: '';
   position: absolute;
   top: 25%;
@@ -140,6 +149,16 @@
   border: 1px solid var(--error);
 }
 
+/* Loading state */
+.qr-loadingRa {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: var(--accent);
+}
+
+/* Responsive adjustments */
 @media (max-width: 600px) {
   .qr-scan-containerRa {
     padding: 1rem;
@@ -157,5 +176,9 @@
     left: 1rem;
     padding: 0.4rem 0.8rem;
     font-size: 0.9rem;
+  }
+
+  #qr-scanner::before {
+    border-width: 10px;
   }
 }
