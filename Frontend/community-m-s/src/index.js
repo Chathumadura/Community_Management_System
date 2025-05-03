@@ -29,6 +29,7 @@ import UserProfile from "./Page/Userprofile.js";
 
 
 
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
 
@@ -61,6 +62,7 @@ root.render(
       <Route path="/attend" element={<QRCodePage/>}/>
       <Route path="/monthlysalaryreport" element={<MonthlySalaryReport />} />
       <Route path="/employee-salary-report/:employeeId" element={<EmployeeSalaryReport />} />
+      
 
 
     </Routes>

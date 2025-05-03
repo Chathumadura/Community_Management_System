@@ -28,7 +28,7 @@ export default function AdminDashboard() {
                 const response = await axios.get(`http://localhost:8070/salary/monthlysal/${year}/${month}`);
                 const salaryData = response.data;
                 const total = salaryData.reduce((sum, emp) => sum + emp.monthlySalary, 0);
-                setTotalSalary(`$${total.toFixed(2)}`);
+                setTotalSalary(`Rs.${total.toFixed(2)}`);
             } catch (error) {
                 console.error("Error fetching total salary:", error);
             }

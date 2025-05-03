@@ -1,10 +1,27 @@
 const express = require('express');
 const router = express.Router();
-const { assignParkingSlot, getLatestParkingSlot } = require('../../controller/Kavishka/leavingTimeController');
 
-console.log("Parking Controller Function:", assignParkingSlot);
 
+const {
+    assignParkingSlot,
+    getAllParkingSlots,
+    getLatestParkingSlot,
+    updateSpecificTime,
+    deleteParkingSlot
+} = require('../../controller/Kavishka/leavingTimeController');
+
+// Create
 router.post('/assign', assignParkingSlot);
-router.get('/latest', getLatestParkingSlot); // ✅ Now it's properly defined
+
+// Read
+router.get('/all', getAllParkingSlots);
+router.get('/:id', getLatestParkingSlot);
+
+// Update
+// Add this to your leavingTimeRoutes.js
+router.patch('/update-time/:id', updateSpecificTime);
+
+// Delete
+router.delete('/delete/:id', deleteParkingSlot);
 
 module.exports = router;

@@ -32,17 +32,17 @@
     },
     {
       "slotNumber": 7,
-      "status": "occupied",
+      "status": "free",
       "reservedForTime": null
     },
     {
       "slotNumber": 8,
-      "status": "occupied",
+      "status": "free",
       "reservedForTime": "07:00"
     },
     {
       "slotNumber": 9,
-      "status": "occupied",
+      "status": "free",
       "reservedForTime": "07:00"
     },
     {
@@ -62,7 +62,7 @@
     },
     {
       "slotNumber": 13,
-      "status": "occupied",
+      "status": "free",
       "reservedForTime": null
     },
     {
@@ -77,7 +77,7 @@
     },
     {
       "slotNumber": 16,
-      "status": "occupied",
+      "status": "free",
       "reservedForTime": null
     },
     {
@@ -92,7 +92,7 @@
     },
     {
       "slotNumber": 19,
-      "status": "occupied",
+      "status": "free",
       "reservedForTime": null
     },
     {
@@ -410,7 +410,7 @@
       "vehicleType": "Bike",
       "leavingTime": "2025-05-03 06:00",
       "entryTime": "2025-05-02 04:50",
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2025-05-01T23:20:34.286Z"
     },
     {
@@ -464,7 +464,7 @@
       "vehicleType": "Bike",
       "leavingTime": "2025-05-03 00:00",
       "entryTime": "2025-05-02 04:56",
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2025-05-01T23:26:38.154Z"
     },
     {
@@ -680,7 +680,7 @@
       "vehicleType": "Bike",
       "leavingTime": "2025-05-03 08:00:00",
       "entryTime": "2025-05-02 14:51",
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2025-05-02T09:21:11.604Z"
     },
     {
@@ -698,7 +698,7 @@
       "vehicleType": "Car",
       "leavingTime": "2025-05-03 07:45:00",
       "entryTime": "2025-05-02 15:11",
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2025-05-02T09:41:04.630Z"
     },
     {
@@ -707,7 +707,7 @@
       "vehicleType": "Car",
       "leavingTime": "2025-05-03 07:45:00",
       "entryTime": "2025-05-02 15:14",
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2025-05-02T09:44:10.408Z"
     },
     {
@@ -716,7 +716,7 @@
       "vehicleType": "Car",
       "leavingTime": "2025-05-03 07:45:00",
       "entryTime": "2025-05-02 17:03",
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2025-05-02T11:33:39.521Z"
     },
     {
@@ -725,8 +725,15 @@
       "vehicleType": "Car",
       "leavingTime": "2025-05-03 07:45:00",
       "entryTime": "2025-05-02 18:03",
-      "isActive": true,
+      "isActive": false,
       "createdAt": "2025-05-02T12:33:15.412Z"
+    },
+    {
+      "slot": 10,
+      "leavingTime": "2025-05-04 08:00:00",
+      "entryTime": "2025-05-03 08:05",
+      "isActive": true,
+      "createdAt": "2025-05-03T02:35:30.102Z"
     }
   ]
 }

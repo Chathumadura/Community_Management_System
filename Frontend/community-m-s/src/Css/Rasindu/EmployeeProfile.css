@@ -38,7 +38,7 @@
   display: flex;
   align-items: center;
   background: var(--primary-dark);
-  color: white;
+  color: rgb(40, 24, 219);
   padding: 0.4rem 1rem;
   border-radius: var(--border-radius);
   font-size: 1rem;
@@ -62,34 +62,7 @@
   gap: 1.5rem;
 }
 
-/* Photo */
-.profile-photo-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: var(--dark-card);
-  border-radius: var(--border-radius);
-  padding: 1rem;
-}
 
-.profile-photo {
-  width: 180px;
-  height: 180px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 3px solid var(--primary);
-}
-
-.profile-photo-placeholder {
-  width: 180px;
-  height: 180px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: #4a5568;
-  color: #cbd5e0;
-}
 
 /* Basic Info */
 .basic-info-card {

@@ -18,7 +18,7 @@ const UserList = () => {
                 const decoded = jwtDecode(token);
                 const userId = decoded.id || decoded._id || decoded.userId;
 
-                const response = await fetch(`http://localhost:8070/api/users/${userId}`, {
+                const response = await fetch(`http://localhost:8070/api/leavetime/all`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",

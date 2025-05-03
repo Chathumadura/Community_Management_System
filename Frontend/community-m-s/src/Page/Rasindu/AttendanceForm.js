@@ -1,82 +1,105 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Html5Qrcode } from 'html5-qrcode';
 import { useNavigate } from 'react-router-dom';
-import { QrReader } from 'react-qr-reader';  // Use named import
 import axios from 'axios';
-import '../../Css/Rasindu/AttendanceForm.css'; // Create styling if needed
+import '../../Css/Rasindu/AttendanceForm.css';
 
 const QrScan = () => {
-  const [scannedId, setScannedId] = useState('');
   const [message, setMessage] = useState('');
   const [success, setSuccess] = useState(false);
-  const [checkInDone, setCheckInDone] = useState(false);
-  const [checkInTime, setCheckInTime] = useState(null);
-  const [isCameraActive, setIsCameraActive] = useState(true);
+  const [isScanning, setIsScanning] = useState(false);
+  const qrRef = useRef(null);
+  const html5QrCodeRef = useRef(null);
   const navigate = useNavigate();
 
-  const handleResult = async (result) => {
-    if (result && result.text && !scannedId) {
+  const handleScan = async (decodedText) => {
+    try {
+      // Pause scanning temporarily
+      if (html5QrCodeRef.current && isScanning) {
+        await html5QrCodeRef.current.stop();
+        setIsScanning(false);
+      }
+
+      const parsed = JSON.parse(decodedText);
+      if (!parsed.employeeId) {
+        throw new Error("Invalid QR format: Missing employeeId");
+      }
+
+      const res = await axios.post("http://localhost:8070/attendance/mark", { 
+        empId: parsed.employeeId 
+      });
+
+      setMessage(res.data.message);
+      setSuccess(true);
+
+      setTimeout(() => {
+        setMessage('');
+        startScanner(); // Resume scanning
+      }, 3000);
+
+    } catch (err) {
+      console.error("QR Error:", err);
+      setMessage(err.response?.data?.message || err.message || "Invalid QR or Attendance Error");
+      setSuccess(false);
+      
+      setTimeout(() => {
+        setMessage('');
+        startScanner(); // Resume scanning after error
+      }, 3000);
+    }
+  };
+
+  const startScanner = async () => {
+    if (html5QrCodeRef.current && !isScanning) {
       try {
-        const parsed = JSON.parse(result.text);
-        const empId = parsed.employeeId;
-
-        const now = new Date();
-
-        if (checkInDone && checkInTime && (now - checkInTime) < 30000) {
-          setMessage("Please wait at least 30 seconds before check-out.");
+        const devices = await Html5Qrcode.getCameras();
+        if (devices && devices.length) {
+          await html5QrCodeRef.current.start(
+            devices[0].id,
+            {
+              fps: 10,
+              qrbox: { width: 250, height: 250 },
+            },
+            (decodedText) => {
+              handleScan(decodedText);
+            },
+            (errorMessage) => {
+              console.log("QR Code scan error", errorMessage);
+            }
+          );
+          setIsScanning(true);
+        } else {
+          setMessage("No camera device found");
           setSuccess(false);
-          return;
         }
-
-        setScannedId(empId);
-        const res = await axios.post("http://localhost:8070/attendance/mark", { empId });
-
-        setMessage(res.data.message);
-        setSuccess(true);
-
-        if (res.data.message === 'Check-in successful') {
-          setCheckInDone(true);
-          setCheckInTime(now);
-        } else if (res.data.message === 'Check-out successful') {
-          setCheckInDone(false);
-          setCheckInTime(null);
-        }
-
-        setTimeout(() => {
-          setScannedId('');
-          setMessage('');
-        }, 5000);
-
       } catch (err) {
-        setMessage("Invalid QR or Attendance Error");
+        console.error("Camera error:", err);
+        setMessage("Camera not accessible");
         setSuccess(false);
-        console.error(err);
       }
     }
   };
 
-  const handleError = (err) => {
-    console.error("QR Scan Error:", err);
-    setMessage("Camera Error");
-    setSuccess(false);
-  };
+  useEffect(() => {
+    html5QrCodeRef.current = new Html5Qrcode("reader");
+    startScanner();
+
+    return () => {
+      if (html5QrCodeRef.current && isScanning) {
+        html5QrCodeRef.current.stop().then(() => {
+          html5QrCodeRef.current.clear();
+        }).catch(err => console.error("Stop error:", err));
+      }
+    };
+  }, []);
 
   return (
     <div className="qr-scan-containerRa">
-      <button onClick={() => navigate(-1)} className="qr-scan-back-btnRa">&larr; Back</button>
+      <button onClick={() => navigate(-1)} className="qr-scan-back-btnRa">
+        &larr; Back
+      </button>
       <h2>Scan Employee QR Code</h2>
-
-      <div className="qr-scannerRa">
-        {isCameraActive && (
-          <QrReader
-            delay={300}
-            onError={handleError}
-            onResult={handleResult}
-            constraints={{ facingMode: 'environment' }}
-            style={{ width: '100%' }}
-          />
-        )}
-        <div className="scan-lineRa"></div>
-      </div>
+      <div id="reader" ref={qrRef}></div>
 
       {message && (
         <div className={`qr-scan-messageRa ${success ? 'success' : 'error'}`}>

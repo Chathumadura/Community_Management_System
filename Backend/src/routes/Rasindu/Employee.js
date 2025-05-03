@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const Employee = require("../../model/Rasindu/Employee");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const Employee = require("../../model/Rasindu/Employee");
 
 // Ensure uploads directory exists
 const uploadDir = path.join(__dirname, "../../uploads");
@@ -38,16 +38,18 @@ const upload = multer({
     }
 });
 
-// Add Employee 
+// Add Employee
 router.post("/add", upload.single("photo"), async (req, res) => {
     try {
         const { name, address, contact, email, role, hourlyRate } = req.body;
-        
+
+        // Validate required fields
         if (!name || !address || !contact || !email || !role || !hourlyRate) {
             if (req.file) fs.unlinkSync(req.file.path);
             return res.status(400).json({ error: "All required fields must be provided." });
         }
 
+        // Check if email already exists
         const existingEmployee = await Employee.findOne({ email });
         if (existingEmployee) {
             if (req.file) fs.unlinkSync(req.file.path);
@@ -57,7 +59,6 @@ router.post("/add", upload.single("photo"), async (req, res) => {
         // Generate unique EMP ID
         let nextId = 1;
         const lastEmployee = await Employee.findOne().sort({ _id: -1 });
-
         if (lastEmployee && lastEmployee.employeeId && lastEmployee.employeeId.startsWith("EMP")) {
             const lastIdNumber = parseInt(lastEmployee.employeeId.replace("EMP", ""));
             if (!isNaN(lastIdNumber)) {
@@ -102,7 +103,7 @@ router.post("/add", upload.single("photo"), async (req, res) => {
     }
 });
 
-// Read Employee Details
+// Get All Employees
 router.get("/", async (req, res) => {
     try {
         const employees = await Employee.find();
@@ -121,28 +122,27 @@ router.get("/", async (req, res) => {
     }
 });
 
-// Fetch Employee by ID
+// Get Employee by ID
 router.get("/:id", async (req, res) => {
     try {
-        const employee = await Employee.findById(req.params.id);
+        const employee = await Employee.findById(req.params.id).lean();
         if (!employee) {
             return res.status(404).json({ error: "Employee not found" });
         }
 
-        // Ensure photo URL is complete in the response
-        const employeeResponse = employee.toObject();
-        if (employeeResponse.photo && !employeeResponse.photo.startsWith('http')) {
-            employeeResponse.photo = `http://${req.headers.host}${employeeResponse.photo}`;
+        // Ensure photo URL is complete
+        if (employee.photo && !employee.photo.startsWith('http')) {
+            employee.photo = `${req.protocol}://${req.get('host')}${employee.photo}`;
         }
 
-        res.status(200).json(employeeResponse);
+        res.status(200).json(employee);
     } catch (err) {
         console.error("Error fetching employee:", err);
-        res.status(500).json({ error: "Internal Server Error", details: err.message });
+        res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
-// Employee Details Update
+// Update Employee Details
 router.put("/update/:id", upload.single("photo"), async (req, res) => {
     try {
         const employeeId = req.params.id;
@@ -199,7 +199,7 @@ router.put("/update/:id", upload.single("photo"), async (req, res) => {
     }
 });
 
-// Delete Employee Details
+// Delete Employee
 router.delete("/delete/:id", async (req, res) => {
     try {
         const employeeId = req.params.id;
