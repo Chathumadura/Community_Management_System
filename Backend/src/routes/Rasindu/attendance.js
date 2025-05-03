@@ -3,89 +3,95 @@ const router = express.Router();
 const Attendance = require("../../model/Rasindu/Attendance");
 const Employee = require("../../model/Rasindu/Employee");
 
-// Helper function to calculate working hours
+// Working hours calculator
 const calculateWorkingHours = async (employeeId, year, month) => {
-  const startOfMonth = new Date(year, month - 1, 1);
-  const endOfMonth = new Date(year, month, 0);
+  const start = new Date(year, month - 1, 1);
+  const end = new Date(year, month, 0);
 
   const records = await Attendance.find({
     employeeId,
-    date: { $gte: startOfMonth, $lte: endOfMonth },
+    date: { $gte: start, $lte: end },
   });
 
-  let totalHours = 0;
+  let total = 0;
   records.forEach(record => {
     if (record.checkIn && record.checkOut) {
-      const checkIn = new Date(record.checkIn);
-      const checkOut = new Date(record.checkOut);
-      totalHours += (checkOut - checkIn) / (1000 * 60 * 60); // in hours
+      const hours = (new Date(record.checkOut) - new Date(record.checkIn)) / (1000 * 60 * 60);
+      total += hours;
     }
   });
 
-  return totalHours;
+  return total;
 };
 
-// ✅ Mark attendance with delay check
+// Mark Attendance API
 router.post("/mark", async (req, res) => {
-  const { empId } = req.body;
-
-  if (!empId) {
-    return res.status(400).json({ error: "EMP ID is required." });
-  }
-
-  const today = new Date().toISOString().split("T")[0]; // yyyy-mm-dd
-  const currentTime = new Date();
-
   try {
-    let record = await Attendance.findOne({ employeeId: empId, date: today });
+    const { empId } = req.body;
 
-    if (!record) {
-      // Check-in
-      record = new Attendance({
-        employeeId: empId,
-        date: today,
-        checkIn: currentTime,
-      });
-      await record.save();
-      return res.json({ message: "Check-in successful", record });
+    if (!empId) {
+      return res.status(400).json({ message: "EMP ID is required." });
     }
 
-    if (!record.checkOut) {
-      const checkInTime = new Date(record.checkIn);
-      const timeDifference = (currentTime - checkInTime) / 1000; // in seconds
-
-      if (timeDifference < 15) {
-        return res.status(400).json({
-          error: "Please wait at least 30 seconds before checking out.",
-        });
-      }
-
-      // Check-out
-      record.checkOut = currentTime;
-      await record.save();
-      return res.json({ message: "Check-out successful", record });
+    // Validate empId format
+    if (typeof empId !== 'string' || empId.trim() === '') {
+      return res.status(400).json({ message: "Invalid EMP ID format." });
     }
 
-    return res.status(400).json({
-      error: "Attendance already completed for today.",
+    const employee = await Employee.findOne({ employeeId: empId });
+    if (!employee) {
+      return res.status(404).json({ message: "Employee not found." });
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set to start of day
+    
+    let attendance = await Attendance.findOne({
+      employeeId: empId,
+      date: { $gte: today, $lt: new Date(today.getTime() + 24 * 60 * 60 * 1000) }
     });
 
+    const currentTime = new Date();
+
+    if (!attendance) {
+      // Mark check-in
+      attendance = new Attendance({
+        employeeId: empId,
+        date: currentTime,
+        checkIn: currentTime,
+      });
+      await attendance.save();
+      return res.status(200).json({ message: "Check-in marked successfully." });
+    } else if (!attendance.checkOut) {
+      // Mark check-out
+      const checkInTime = new Date(attendance.checkIn);
+      const timeDiff = (currentTime - checkInTime) / 1000  // in seconds
+      
+      if (timeDiff < 15) {
+        return res.status(400).json({ message: "Cannot check-out within 15 seconds of check-in." });
+      }
+
+      attendance.checkOut = currentTime;
+      attendance.hoursWorked = (timeDiff / 3600).toFixed(2); // convert to hours
+      
+      await attendance.save();
+      return res.status(200).json({ message: "Check-out marked successfully." });
+    } else {
+      return res.status(400).json({ message: "Already checked out for today." });
+    }
   } catch (err) {
-    console.error("Attendance marking error:", err);
-    res.status(500).json({ error: "Server error" });
+    console.error("Error in /attendance/mark:", err);
+    res.status(500).json({ message: "Internal server error." });
   }
 });
 
-// ✅ Salary of one employee
+// Get employee salary
 router.get("/employee/:employeeId/:year/:month", async (req, res) => {
   const { employeeId, year, month } = req.params;
 
   try {
     const employee = await Employee.findOne({ employeeId });
-
-    if (!employee) {
-      return res.status(404).json({ error: "Employee not found" });
-    }
+    if (!employee) return res.status(404).json({ error: "Employee not found" });
 
     const totalHours = await calculateWorkingHours(employeeId, year, month);
     const monthlySalary = totalHours * employee.hourlyRate;
@@ -99,34 +105,32 @@ router.get("/employee/:employeeId/:year/:month", async (req, res) => {
       monthlySalary: parseFloat(monthlySalary.toFixed(2)),
     });
   } catch (err) {
-    console.error("Salary calculation error:", err);
+    console.error("Salary calc error:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-// ✅ All Employees' Salary Report
+// Monthly salary report
 router.get("/monthlysal/:year/:month", async (req, res) => {
   const { year, month } = req.params;
 
   try {
     const employees = await Employee.find();
-    const results = await Promise.all(employees.map(async (emp) => {
-      const totalHours = await calculateWorkingHours(emp.employeeId, year, month);
-      const monthlySalary = totalHours * emp.hourlyRate;
-
+    const report = await Promise.all(employees.map(async emp => {
+      const hours = await calculateWorkingHours(emp.employeeId, year, month);
       return {
         employeeId: emp.employeeId,
         name: emp.name,
         role: emp.role,
-        totalHours: parseFloat(totalHours.toFixed(2)),
+        totalHours: parseFloat(hours.toFixed(2)),
         hourlyRate: emp.hourlyRate,
-        monthlySalary: parseFloat(monthlySalary.toFixed(2)),
+        monthlySalary: parseFloat((hours * emp.hourlyRate).toFixed(2))
       };
     }));
 
-    res.json(results);
+    res.json(report);
   } catch (err) {
-    console.error("Error fetching salary report:", err);
+    console.error("Monthly salary error:", err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });

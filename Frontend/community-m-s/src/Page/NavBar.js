@@ -53,38 +53,12 @@ function Navbar({ isLoggedIn, onLogout }) {
           </li>
 
           <li className="nav-item">
-            <Link to="/about" className="nav-links" onClick={closeMenus}>
+            <Link to="/aboutus" className="nav-links" onClick={closeMenus}>
               About Us
             </Link>
           </li>
 
-          <li className={`nav-item dropdown ${isDropdownOpen ? 'active' : ''}`}>
-            <span className="nav-links dropdown-toggle" onClick={toggleDropdown}>
-              Features ▾
-            </span>
-            <ul className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`}>
-              <li>
-                <span className="dropdown-link" onClick={navigateToMarketplace}>
-                  Marketplace
-                </span>
-              </li>
-              <li>
-                <Link to="/Maintenance" className="dropdown-link" onClick={closeMenus}>
-                  Maintenance Request
-                </Link>
-              </li>
-              <li>
-                <Link to="/resident-portal" className="dropdown-link" onClick={closeMenus}>
-                  Resident Portal
-                </Link>
-              </li>
-              <li>
-                <Link to="/smart-parking" className="dropdown-link" onClick={closeMenus}>
-                  Smart Parking
-                </Link>
-              </li>
-            </ul>
-          </li>
+          
 
           <li className="nav-item">
             <Link to="/contact" className="nav-links" onClick={closeMenus}>

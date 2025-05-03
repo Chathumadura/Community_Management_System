@@ -3,15 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCalendarAlt,
+  faSignOutAlt,
   faFileInvoiceDollar,
   faUserCog,
   faChartLine
 } from '@fortawesome/free-solid-svg-icons';
 import "../../Css/Rasindu/maindash.css";
 
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const employeeName = "John Doe"; // This should ideally come from context or API
+
+  const handleLogout = () => {
+    // Example: clear user token/session if needed
+    localStorage.removeItem('userToken');
+    navigate('/');
+  };
 
   const adminButtons = [
     {
@@ -25,19 +33,21 @@ const Dashboard = () => {
     {
       id: 2,
       icon: faCalendarAlt,
-      title: "Attendance Control",
+      title: "Manage parking",
       description: "Monitor and adjust attendance logs",
       color: "#858796",
-      path: "/admin/attendance"
+      path: "/security"
     },
+
     {
       id: 3,
-      icon: faFileInvoiceDollar,
-      title: "Payroll Management",
-      description: "Generate and manage employee payrolls",
-      color: "#20c997",
-      path: "/admin/payroll"
+      icon: faCalendarAlt,
+      title: "Manage parking",
+      description: "Monitor and adjust attendance logs",
+      color: "#858796",
+      path: "/demoparking"
     },
+   
     {
       id: 4,
       icon: faChartLine,
@@ -46,12 +56,20 @@ const Dashboard = () => {
       color: "#fd7e14",
       path: "/admin/reports"
     }
+
+   
   ];
 
   return (
     <div className="mra-dashboard-container">
       <header className="mra-dashboard-header">
         <h1>Welcome...!</h1>
+        <button 
+          className="logout-button"
+          onClick={handleLogout}
+        >
+          <FontAwesomeIcon icon={faSignOutAlt} /> Logout
+        </button>
       </header>
       
       <div className="mra-quick-stats">
@@ -78,6 +96,7 @@ const Dashboard = () => {
       {/* Admin section */}
       <div className="mra-admin-grid">
         <h2>Admin Dashboard</h2>
+        
         <div className="mra-action-grid">
           {adminButtons.map((button) => (
             <div 

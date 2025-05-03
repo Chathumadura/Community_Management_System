@@ -57,7 +57,11 @@ export default function AdminDashboard() {
                             All Complaints
                             </button>
                         </li>
-
+                        <li>
+                            <button className="menu-itemRa" onClick={() => navigate("/leave")}>
+                            Add Leaving Time
+                            </button>
+                        </li>
 
 
                     </ul>

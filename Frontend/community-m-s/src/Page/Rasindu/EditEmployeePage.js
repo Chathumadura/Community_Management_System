@@ -109,11 +109,7 @@ const EditEmployeePage = () => {
             <label>Contact:</label>
             <input className="in2ERa" type="text" name="contact" value={employee.contact} onChange={handleInputChange} />
           </div>
-          <div>
-            <label>Profile Photo:</label>
-            <input type="file" name="photo" accept="image/*" onChange={handleFileChange} />
-            {employee.photo && <img src={`http://localhost:8070/uploads/${employee.photo}`} alt="Profile" width="100" />}
-          </div>
+          
           <button className="btnsubmit2ERa" type="submit">Update Employee</button>
         </form>
       </div>
