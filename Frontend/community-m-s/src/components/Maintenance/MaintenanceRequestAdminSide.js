@@ -92,7 +92,7 @@ const handleDelete = (id) => {
         })
         .catch((error) => {
             console.error("Error assigning staff:", error);
-            alert("Failed to assign staff");
+          //  alert("Failed to assign staff");
         });
 };
 
@@ -135,7 +135,7 @@ const handleDelete = (id) => {
                 || "Staff Assigned"
             }
         </span>
-    ) : (
+    ) : Maintenance.status === "Pending" ? (
         <div className="select-container">
             <select
                 onChange={(e) => handleAssignStaff(Maintenance._id, e.target.value)}
@@ -150,9 +150,10 @@ const handleDelete = (id) => {
                 ))}
             </select>
         </div>
+    ) : (
+        <span style={{ color: "gray" }}>Already accepted</span>
     )}
 </td>
-
 
 
 

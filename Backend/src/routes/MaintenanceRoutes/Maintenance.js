@@ -88,6 +88,24 @@ router.get("/:id", async (req, res) => {
     }
 })
 
+router.get("/:id", async (req, res) => {
+    try {
+        const employee = await Employee.findById(req.params.id);
+        if (!employee) {
+            return res.status(404).json({ error: "Employee not found" });
+        }
 
+        // Ensure photo URL is complete in the response
+        const employeeResponse = employee.toObject();
+        if (employeeResponse.photo && !employeeResponse.photo.startsWith('http')) {
+            employeeResponse.photo = `http://${req.headers.host}${employeeResponse.photo}`;
+        }
+
+        res.status(200).json(employeeResponse);
+    } catch (err) {
+        console.error("Error fetching employee:", err);
+        res.status(500).json({ error: "Internal Server Error", details: err.message });
+    }
+});
 
 module.exports= router;

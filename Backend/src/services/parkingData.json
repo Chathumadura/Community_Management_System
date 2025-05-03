@@ -62,7 +62,7 @@
     },
     {
       "slotNumber": 13,
-      "status": "occupied",
+      "status": "free",
       "reservedForTime": null
     },
     {
@@ -709,42 +709,6 @@
       "entryTime": "2025-05-02 15:14",
       "isActive": false,
       "createdAt": "2025-05-02T09:44:10.408Z"
-    },
-    {
-      "slot": 10,
-      "vehicleNumber": "ABC-1234",
-      "vehicleType": "Van",
-      "leavingTime": "2025-05-04 08:00:00",
-      "entryTime": "2025-05-03 10:30",
-      "isActive": true,
-      "createdAt": "2025-05-03T05:00:53.685Z"
-    },
-    {
-      "slot": 11,
-      "vehicleNumber": "ABC-1234",
-      "vehicleType": "Van",
-      "leavingTime": "2025-05-04 08:00:00",
-      "entryTime": "2025-05-03 10:32",
-      "isActive": true,
-      "createdAt": "2025-05-03T05:02:11.820Z"
-    },
-    {
-      "slot": 12,
-      "vehicleNumber": "ABC-1234",
-      "vehicleType": "Van",
-      "leavingTime": "2025-05-04 08:00:00",
-      "entryTime": "2025-05-03 10:41",
-      "isActive": true,
-      "createdAt": "2025-05-03T05:11:43.959Z"
-    },
-    {
-      "slot": 13,
-      "vehicleNumber": "ABC-1234",
-      "vehicleType": "Van",
-      "leavingTime": "2025-05-04 08:00:00",
-      "entryTime": "2025-05-03 11:24",
-      "isActive": true,
-      "createdAt": "2025-05-03T05:54:28.288Z"
     }
   ]
 }
