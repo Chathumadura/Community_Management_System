@@ -1,6 +1,8 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
+const cors = require('cors')
+const cookieParser = require('cookie-parser')
 
 const app = express()
 const host = 'localhost';
@@ -82,3 +84,9 @@ app.use("/api/leavetime", leavingTimeRouters);
 
 const parkingRoutes = require('./src/routes/Kavishka/parkingRoutes');
 app.use('/api', parkingRoutes);
+
+//samidi
+const Maintenanerouter = require('./src/routes/MaintenanceRoutes/Maintenance')
+const ComplaintsRouter = require('./src/routes/ComplaintsRoutes/Complaints')
+app.use('/Maintenance',Maintenanerouter);
+app.use('/Complaints',ComplaintsRouter);

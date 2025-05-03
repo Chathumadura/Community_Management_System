@@ -53,7 +53,7 @@ function Navbar({ isLoggedIn, onLogout }) {
           </li>
 
           <li className="nav-item">
-            <Link to="/parking" className="nav-links" onClick={closeMenus}>
+            <Link to="/about" className="nav-links" onClick={closeMenus}>
               About Us
             </Link>
           </li>
@@ -69,7 +69,7 @@ function Navbar({ isLoggedIn, onLogout }) {
                 </span>
               </li>
               <li>
-                <Link to="/payments" className="dropdown-link" onClick={closeMenus}>
+                <Link to="/Maintenance" className="dropdown-link" onClick={closeMenus}>
                   Maintenance Request
                 </Link>
               </li>

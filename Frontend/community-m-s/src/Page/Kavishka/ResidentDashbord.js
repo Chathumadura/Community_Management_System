@@ -59,7 +59,7 @@ const App = () => {
                 <Link to="/apartmentForm"><button style={buttonStyle}>Apply Apartment</button></Link>
                 <Link to="/visitor"><button style={buttonStyle}>Visitor Registration</button></Link>
                 <Link to="/vehicleRegisterForm"><button style={buttonStyle}>Parking Registration</button></Link>
-                <Link to="/profile"><button style={profileButtonStyle}>User Profile</button></Link>
+                <Link to="/ResidentDash"><button style={profileButtonStyle}>User Profile</button></Link>
                 <Link to="/user"><button style={buttonStyle}>userlist</button></Link>
                 <Link to="/security"><button style={buttonStyle}>SecurityDashbord</button></Link>
                 <Link to="/demoparking"><button style={buttonStyle}>Demoparking</button></Link>
