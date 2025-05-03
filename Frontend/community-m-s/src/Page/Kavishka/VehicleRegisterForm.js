@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../../Css/vehicaleReg.css";
 
 const VehicleRegisterForm = () => {
-    const [vehicles, setVehicles] = useState([
-        { vehicleNumber: "", vehicleType: "Car" }
-    ]);
+    const [vehicles, setVehicles] = useState([{ vehicleNumber: "", vehicleType: "Car" }]);
     const [userName, setUserName] = useState("");
     const [userId, setUserId] = useState("");
     const [qrCodeUrls, setQrCodeUrls] = useState([]);
@@ -40,6 +38,12 @@ const VehicleRegisterForm = () => {
         }
     };
 
+    const isValidVehicleNumber = (vehicleNumber) => {
+        const trimmed = vehicleNumber.trim();
+        const regex = /^([A-Z]{2,3}-\d{3,4}|\d{2,3}-\d{4}|ශ්‍රී\s?\d{3,4})$/;
+        return regex.test(trimmed);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSuccessMessage("");
@@ -49,19 +53,18 @@ const VehicleRegisterForm = () => {
         try {
             const registeredQrCodes = [];
 
-            // Validate all vehicle numbers first
             for (const vehicle of vehicles) {
                 if (!vehicle.vehicleNumber || !vehicle.vehicleNumber.trim()) {
                     setError("❌ All vehicle numbers must be filled");
                     return;
                 }
+                if (!isValidVehicleNumber(vehicle.vehicleNumber)) {
+                    setError(`❌ Invalid vehicle number format: ${vehicle.vehicleNumber}`);
+                    return;
+                }
             }
 
-            // Register each vehicle one by one
             for (const vehicle of vehicles) {
-                console.log("Registering vehicle:", vehicle); // Debug log
-
-                // Create QR code data object with all the information
                 const qrCodeData = {
                     residentId: userId,
                     name: userName,
@@ -70,8 +73,9 @@ const VehicleRegisterForm = () => {
                     timestamp: new Date().toISOString()
                 };
 
-                // Simulating QR code URL generation
-                const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(JSON.stringify(qrCodeData))}`;
+                const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
+                    JSON.stringify(qrCodeData)
+                )}`;
 
                 registeredQrCodes.push({
                     qrCodeUrl,
@@ -90,12 +94,12 @@ const VehicleRegisterForm = () => {
 
     const handleDownload = (url, vehicleNumber) => {
         fetch(url)
-            .then((response) => response.blob()) // Convert the image to blob
+            .then((response) => response.blob())
             .then((blob) => {
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob); // Create an object URL for the blob
-                link.download = `vehicle_qr_code_${vehicleNumber}.png`; // Specify the filename
-                link.click(); // Trigger the download
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = `vehicle_qr_code_${vehicleNumber}.png`;
+                link.click();
             })
             .catch((err) => {
                 console.error("Failed to download QR code:", err);
@@ -108,6 +112,15 @@ const VehicleRegisterForm = () => {
                 <div className="form-header">
                     <div className="form-icon">🚗</div>
                     <h2 className="form-title">Vehicle Registration</h2>
+                    <div class="button-wrapper">
+                        <button
+                            type="button"
+                            className="back-button"
+                            onClick={() => window.history.back()}
+                        >
+                            ← Back
+                        </button>
+                    </div>    
                 </div>
 
                 <form onSubmit={handleSubmit} className="registration-form">
@@ -123,10 +136,7 @@ const VehicleRegisterForm = () => {
                         />
                     </div>
 
-                    <input
-                        type="hidden"
-                        value={userId}
-                    />
+                    <input type="hidden" value={userId} />
 
                     {vehicles.map((vehicle, index) => (
                         <div key={index} className="vehicle-entry">
@@ -148,9 +158,11 @@ const VehicleRegisterForm = () => {
                                 <input
                                     type="text"
                                     value={vehicle.vehicleNumber}
-                                    onChange={(e) => handleVehicleChange(index, "vehicleNumber", e.target.value)}
+                                    onChange={(e) =>
+                                        handleVehicleChange(index, "vehicleNumber", e.target.value)
+                                    }
                                     required
-                                    placeholder="e.g., ABC-1234"
+                                    placeholder="e.g., ABC-1234, ශ්‍රී 1234"
                                     className="form-input"
                                     autoComplete="off"
                                     style={{ color: "black" }}
@@ -161,7 +173,9 @@ const VehicleRegisterForm = () => {
                                 <label>Vehicle Type</label>
                                 <select
                                     value={vehicle.vehicleType}
-                                    onChange={(e) => handleVehicleChange(index, "vehicleType", e.target.value)}
+                                    onChange={(e) =>
+                                        handleVehicleChange(index, "vehicleType", e.target.value)
+                                    }
                                     required
                                     className="form-select"
                                 >
@@ -185,21 +199,13 @@ const VehicleRegisterForm = () => {
                             + Add Another Vehicle
                         </button>
 
-                        <button
-                            type="submit"
-                            className="submit-button"
-                        >
+                        <button type="submit" className="submit-button">
                             Register Vehicles
                         </button>
                     </div>
 
-                    {successMessage && (
-                        <div className="success-message">{successMessage}</div>
-                    )}
-
-                    {error && (
-                        <div className="error-message">{error}</div>
-                    )}
+                    {successMessage && <div className="success-message">{successMessage}</div>}
+                    {error && <div className="error-message">{error}</div>}
                 </form>
             </div>
 

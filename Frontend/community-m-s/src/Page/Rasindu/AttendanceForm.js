@@ -7,76 +7,85 @@ import '../../Css/Rasindu/AttendanceForm.css';
 const QrScan = () => {
   const [message, setMessage] = useState('');
   const [success, setSuccess] = useState(false);
-  const [checkInDone, setCheckInDone] = useState(false);
-  const [checkInTime, setCheckInTime] = useState(null);
+  const [isScanning, setIsScanning] = useState(false);
   const qrRef = useRef(null);
   const html5QrCodeRef = useRef(null);
   const navigate = useNavigate();
 
   const handleScan = async (decodedText) => {
     try {
-      const parsed = JSON.parse(decodedText);
-      const empId = parsed.employeeId;
-      const now = new Date();
-
-      if (checkInDone && checkInTime && (now - checkInTime) < 30000) {
-        setMessage("Please wait at least 30 seconds before check-out.");
-        setSuccess(false);
-        return;
+      // Pause scanning temporarily
+      if (html5QrCodeRef.current && isScanning) {
+        await html5QrCodeRef.current.stop();
+        setIsScanning(false);
       }
 
-      const res = await axios.post("http://localhost:8070/attendance/mark", { empId });
+      const parsed = JSON.parse(decodedText);
+      if (!parsed.employeeId) {
+        throw new Error("Invalid QR format: Missing employeeId");
+      }
+
+      const res = await axios.post("http://localhost:8070/attendance/mark", { 
+        empId: parsed.employeeId 
+      });
 
       setMessage(res.data.message);
       setSuccess(true);
 
-      if (res.data.message === 'Check-in successful') {
-        setCheckInDone(true);
-        setCheckInTime(now);
-      } else if (res.data.message === 'Check-out successful') {
-        setCheckInDone(false);
-        setCheckInTime(null);
-      }
-
       setTimeout(() => {
         setMessage('');
-      }, 5000);
+        startScanner(); // Resume scanning
+      }, 3000);
 
     } catch (err) {
       console.error("QR Error:", err);
-      setMessage("Invalid QR or Attendance Error");
+      setMessage(err.response?.data?.message || err.message || "Invalid QR or Attendance Error");
       setSuccess(false);
+      
+      setTimeout(() => {
+        setMessage('');
+        startScanner(); // Resume scanning after error
+      }, 3000);
+    }
+  };
+
+  const startScanner = async () => {
+    if (html5QrCodeRef.current && !isScanning) {
+      try {
+        const devices = await Html5Qrcode.getCameras();
+        if (devices && devices.length) {
+          await html5QrCodeRef.current.start(
+            devices[0].id,
+            {
+              fps: 10,
+              qrbox: { width: 250, height: 250 },
+            },
+            (decodedText) => {
+              handleScan(decodedText);
+            },
+            (errorMessage) => {
+              console.log("QR Code scan error", errorMessage);
+            }
+          );
+          setIsScanning(true);
+        } else {
+          setMessage("No camera device found");
+          setSuccess(false);
+        }
+      } catch (err) {
+        console.error("Camera error:", err);
+        setMessage("Camera not accessible");
+        setSuccess(false);
+      }
     }
   };
 
   useEffect(() => {
-    const scannerId = "reader";
-    html5QrCodeRef.current = new Html5Qrcode(scannerId);
-
-    Html5Qrcode.getCameras().then((devices) => {
-      if (devices && devices.length) {
-        const cameraId = devices[0].id;
-
-        html5QrCodeRef.current.start(
-          cameraId,
-          {
-            fps: 10,
-            qrbox: 250,
-          },
-          handleScan,
-          (err) => {
-            console.warn("Scan error:", err);
-          }
-        );
-      }
-    }).catch(err => {
-      console.error("Camera error:", err);
-      setMessage("Camera not accessible");
-      setSuccess(false);
-    });
+    html5QrCodeRef.current = new Html5Qrcode("reader");
+    startScanner();
 
     return () => {
-      if (html5QrCodeRef.current) {
+      if (html5QrCodeRef.current && isScanning) {
         html5QrCodeRef.current.stop().then(() => {
           html5QrCodeRef.current.clear();
         }).catch(err => console.error("Stop error:", err));
@@ -86,9 +95,11 @@ const QrScan = () => {
 
   return (
     <div className="qr-scan-containerRa">
-      <button onClick={() => navigate(-1)} className="qr-scan-back-btnRa">&larr; Back</button>
+      <button onClick={() => navigate(-1)} className="qr-scan-back-btnRa">
+        &larr; Back
+      </button>
       <h2>Scan Employee QR Code</h2>
-      <div id="reader" ref={qrRef} style={{ width: "300px", margin: "auto" }}></div>
+      <div id="reader" ref={qrRef}></div>
 
       {message && (
         <div className={`qr-scan-messageRa ${success ? 'success' : 'error'}`}>

@@ -25,6 +25,7 @@ import EmployeeProfile from './Page/Rasindu/EmployeeProfile.js';
 import QRCodePage from "./Page/Rasindu/AttendanceForm.js";
 import MonthlySalaryReport from './Page/Rasindu/MonthlySalaryReport.js';
 import EmployeeSalaryReport from "./Page/Rasindu/EmployeeSalaryReport.js";
+import UserProfile from "./Page/Userprofile.js";
 
 //samidi
 import Maintenance from './Page/Maintenance/Maintenance.js';
@@ -62,6 +63,7 @@ root.render(
 
 
 
+      <Route path='/profile' element={< UserProfile/>} />
       <Route path="/employees" element={<EmployeeListPage/>}/>
       <Route path="/empdashboard" element={<AdminDashbord/>}/>
       <Route path="/edit_employee/:id" element={<EditEmployeePage />} />

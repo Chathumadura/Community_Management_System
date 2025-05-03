@@ -1,4 +1,3 @@
-// src/components/Rasindu/EmployeeProfile.js
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -21,7 +20,6 @@ const EmployeeProfile = () => {
   const [employee, setEmployee] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [photoError, setPhotoError] = useState(false);
   const qrRef = useRef();
 
   useEffect(() => {
@@ -39,10 +37,6 @@ const EmployeeProfile = () => {
     fetchEmployee();
   }, [id]);
 
-  const handleImageError = () => {
-    setPhotoError(true);
-  };
-
   const downloadQRCode = () => {
     const canvas = qrRef.current.querySelector('canvas');
     if (canvas) {
@@ -59,13 +53,7 @@ const EmployeeProfile = () => {
   if (!employee) return <div className="not-found">Employee not found</div>;
 
   const qrData = JSON.stringify({
-    employeeId: employee.employeeId,
-    name: employee.name,
-    email: employee.email,
-    contact: employee.contact,
-    address: employee.address,
-    role: employee.role,
-    hourlyRate: employee.hourlyRate
+    employeeId: employee.employeeId
   });
 
   return (
@@ -80,27 +68,12 @@ const EmployeeProfile = () => {
 
       <div className="profile-content">
         <div className="profile-left-section">
-          <div className="profile-photo-container">
-            {employee.photo && !photoError ? (
-              <img
-                src={employee.photo}
-                alt={`${employee.name}'s profile`}
-                className="profile-photo"
-                onError={handleImageError}
-              />
-            ) : (
-              <div className="profile-photo-placeholder">
-                <FontAwesomeIcon icon={faUser} size="3x" />
-              </div>
-            )}
-          </div>
-
           <div className="basic-info-card">
             <h2 className="employee-name">{employee.name}</h2>
             <p className="employee-role">{employee.role}</p>
             <div className="hourly-rate-display">
               <FontAwesomeIcon icon={faMoneyBillWave} />
-              <span>Hourly Rate: Rs. {employee.hourlyRate.toFixed(2)}</span>
+              <span>Hourly Rate: Rs. {employee.hourlyRate?.toFixed(2)}</span>
             </div>
           </div>
 
@@ -110,15 +83,20 @@ const EmployeeProfile = () => {
               <QRCodeCanvas
                 value={qrData}
                 size={180}
-                bgColor={"#ffffff"}  // White background
-                fgColor={"#000000"}  // Black foreground
+                bgColor={"#ffffff"}
+                fgColor={"#000000"}
                 level={"H"}
                 includeMargin={true}
               />
             </div>
-            <button className="download-btn" onClick={downloadQRCode}>
+            <button
+              className="download-btn"
+              onClick={downloadQRCode}
+              style={{ color: 'black' }}
+            >
               <FontAwesomeIcon icon={faDownload} /> Download QR Code
-            </button>
+          </button>
+
           </div>
         </div>
 

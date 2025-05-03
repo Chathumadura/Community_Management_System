@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../../Css/Rasindu/EmployeeForm.css";
 import { useNavigate } from 'react-router-dom';
+import { FaArrowLeft, FaUserPlus } from 'react-icons/fa';
 
 const AddEmployee = () => {
     const [employeeData, setEmployeeData] = useState({
@@ -10,7 +11,6 @@ const AddEmployee = () => {
         email: "",
         role: "",
         hourlyRate: "",
-        photo: null,
     });
 
     const [error, setError] = useState("");
@@ -41,40 +41,27 @@ const AddEmployee = () => {
             return false;
         }
 
-        if (employeeData.photo && employeeData.photo.type !== "image/png") {
-            setError("Only PNG images are allowed for the profile photo.");
-            return false;
-        }
-
         return true;
     };
 
     const handleChange = (e) => {
         setEmployeeData({ ...employeeData, [e.target.name]: e.target.value });
-    };
-
-    const handleFileChange = (e) => {
-        setEmployeeData({ ...employeeData, photo: e.target.files[0] });
+        if (error) setError("");
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!validateForm()) return;
 
-        const formData = new FormData();
-        formData.append("name", employeeData.name);
-        formData.append("address", employeeData.address);
-        formData.append("contact", employeeData.contact);
-        formData.append("email", employeeData.email);
-        formData.append("role", employeeData.role);
-        formData.append("hourlyRate", employeeData.hourlyRate);
-        if (employeeData.photo) formData.append("photo", employeeData.photo);
-
         try {
             const res = await fetch("http://localhost:8070/employee/add", {
                 method: "POST",
-                body: formData,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(employeeData),
             });
+
             const data = await res.json();
             if (data.error) {
                 setError(data.error);
@@ -87,7 +74,6 @@ const AddEmployee = () => {
                     email: "",
                     role: "",
                     hourlyRate: "",
-                    photo: null,
                 });
             }
         } catch (err) {
@@ -101,26 +87,72 @@ const AddEmployee = () => {
                 <h2 className="titleA">Register Employee</h2>
                 {error && <p className="error-messageA">{error}</p>}
 
-                <form onSubmit={handleSubmit} encType="multipart/form-data" className="form-containerA">
+                <form onSubmit={handleSubmit} className="form-containerA">
+                    <button 
+                        type="button" 
+                        className="back-button" 
+                        onClick={() => navigate(-1)}
+                    >
+                        <FaArrowLeft /> Back
+                    </button>
+                    
                     <div>
                         <label>Name:</label>
-                        <input className="inA" type="text" name="name" value={employeeData.name} onChange={handleChange} required />
+                        <input 
+                            className="inA" 
+                            type="text" 
+                            name="name" 
+                            value={employeeData.name} 
+                            onChange={handleChange} 
+                            placeholder="Enter full name"
+                            required 
+                        />
                     </div>
                     <div>
                         <label>Address:</label>
-                        <input className="inA" type="text" name="address" value={employeeData.address} onChange={handleChange} required />
+                        <input 
+                            className="inA" 
+                            type="text" 
+                            name="address" 
+                            value={employeeData.address} 
+                            onChange={handleChange} 
+                            placeholder="Enter address"
+                            required 
+                        />
                     </div>
                     <div>
                         <label>Contact:</label>
-                        <input className="inA" type="text" name="contact" value={employeeData.contact} onChange={handleChange} required />
+                        <input 
+                            className="inA" 
+                            type="text" 
+                            name="contact" 
+                            value={employeeData.contact} 
+                            onChange={handleChange} 
+                            placeholder="10-digit phone number"
+                            required 
+                        />
                     </div>
                     <div>
                         <label>Email:</label>
-                        <input className="inA" type="email" name="email" value={employeeData.email} onChange={handleChange} required />
+                        <input 
+                            className="inA" 
+                            type="email" 
+                            name="email" 
+                            value={employeeData.email} 
+                            onChange={handleChange} 
+                            placeholder="example@email.com"
+                            required 
+                        />
                     </div>
                     <div>
                         <label>Role:</label>
-                        <select className="inA" name="role" value={employeeData.role} onChange={handleChange} required>
+                        <select 
+                            className="inA" 
+                            name="role" 
+                            value={employeeData.role} 
+                            onChange={handleChange} 
+                            required
+                        >
                             <option value="">Select Role</option>
                             <option value="Admin">Admin</option>
                             <option value="Security">Security</option>
@@ -131,27 +163,22 @@ const AddEmployee = () => {
                     </div>
                     <div>
                         <label>Hourly Rate:</label>
-                        <input className="inA" type="number" name="hourlyRate" value={employeeData.hourlyRate} onChange={handleChange} required />
-                    </div>
-                    <div>
-                        <label>Upload Photo (PNG only):</label>
                         <input 
                             className="inA" 
-                            type="file" 
-                            name="photo" 
-                            accept="image/png" 
-                            onChange={handleFileChange} 
+                            type="number" 
+                            name="hourlyRate"
+                            min="0" 
+                            step="0.01"
+                            value={employeeData.hourlyRate} 
+                            onChange={handleChange} 
+                            placeholder="Enter hourly rate"
                             required 
-                            id="photo-upload"
                         />
-                        <label htmlFor="photo-upload" className="custom-file-upload">
-                            Choose Photo
-                        </label>
                     </div>
 
-
-                    <button className="subtn" type="submit">Register Employee</button>
-                    <button type="button" className="back-button" onClick={() => navigate(-1)}>Back</button>
+                    <button className="subtn" type="submit">
+                        <FaUserPlus style={{ marginRight: '8px' }} /> Register Employee
+                    </button>
                 </form>
             </div>
         </div>
