@@ -1,382 +1,385 @@
-/* VehicleRegisterForm.css - Black and White Theme */
-
-.main-container {
-    display: flex;
-    flex-wrap: wrap;
+:root {
+    --primary: #8a2be2;
+    --primary-dark: #6a1b9a;
+    --primary-light: #9f7aea;
+    --accent: #00e5ff;
+    --dark-bg: #121212;
+    --dark-card: #1e1e1e;
+    --dark-text: #f0f0f0;
+    --dark-muted: #a0a0a0;
+    --success: #00e676;
+    --error: #ff5252;
+    --border: #333;
+    --border-light: #444;
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --radius: 12px;
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  
+  .dark-theme {
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
+    min-height: 100vh;
+    padding: 2rem;
+  }
+  
+  .vehicle-reg-container {
     max-width: 1200px;
-    margin: 30px auto;
-    gap: 30px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.form-container {
-    flex: 1;
-    min-width: 320px;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    background: #ffffff;
-    position: relative;
-    overflow: hidden;
-    border: 1px solid #e1e1e1;
-}
-
-.form-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  @media (min-width: 992px) {
+    .vehicle-reg-container {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  
+  .form-section {
+    background-color: var(--dark-card);
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+  }
+  
+  .form-header {
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .form-header .header-icon {
+    font-size: 2.5rem;
+    color: var(--primary-light);
+    margin-bottom: 1rem;
+  }
+  
+  .form-header h2 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    color: var(--dark-text);
+  }
+  
+  .subtitle {
+    color: var(--dark-muted);
+    font-size: 0.9rem;
+  }
+  
+  .registration-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .vehicle-card {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+  }
+  
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .card-header h3 {
+    font-size: 1.2rem;
+    color: var(--primary-light);
+  }
+  
+  .remove-btn {
+    background: none;
+    border: none;
+    color: var(--error);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: var(--transition);
+  }
+  
+  .remove-btn:hover {
+    transform: scale(1.1);
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--dark-muted);
+    font-size: 0.9rem;
+  }
+  
+  .form-input, .form-select {
     width: 100%;
-    height: 8px;
-    background: #000000;
-}
-
-.form-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 30px;
-}
-
-.form-icon {
-    font-size: 32px;
-    margin-right: 15px;
-    background-color: #f5f5f5;
-    width: 60px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.form-title {
-    color: #000000;
-    font-size: 28px;
-    font-weight: 600;
-    margin: 0;
-}
-
-.registration-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 5px;
-}
-
-.form-group label {
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: #000000;
-    font-size: 15px;
-}
-
-.form-input,
-.form-select,
-.input-readonly {
-    padding: 12px 15px;
-    border-radius: 8px;
-    border: 1px solid #0f0e0e;
-    font-size: 15px;
-    transition: all 0.3s;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    background-color: #ffffff;
-}
-
-.form-input:focus,
-.form-select:focus {
-    border-color: #000000;
+    padding: 0.8rem 1rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--dark-text);
+    font-size: 1rem;
+    transition: var(--transition);
+  }
+  
+  .form-input:focus, .form-select:focus {
     outline: none;
-
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
-}
-
-.input-readonly {
-    background-color: #f8f8f8;
-    color: #333333;
-}
-
-.submit-button {
-    background: #000000;
-    color: white;
-    padding: 14px;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(138, 43, 226, 0.3);
+  }
+  
+  .readonly {
+    opacity: 0.8;
+    cursor: not-allowed;
+  }
+  
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .btn {
+    padding: 0.8rem 1.5rem;
+    border-radius: var(--radius);
     border: none;
-    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
     cursor: pointer;
-    font-weight: 600;
-    font-size: 16px;
-    transition: all 0.3s;
-    margin-top: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.submit-button:hover {
-    background: #333333;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
-}
-
-.add-vehicle-button {
-    background: #ffffff;
-    color: #000000;
-    padding: 14px;
-    border: 1px solid #000000;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 16px;
-    transition: all 0.3s;
-    margin-top: 10px;
-}
-
-.add-vehicle-button:hover {
-    background: #f5f5f5;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.button-group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.success-message {
-    margin-top: 15px;
-    padding: 12px;
-    background-color: #e8f5e9;
-    color: #1b5e20;
-    border-radius: 8px;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    animation: fadeIn 0.5s ease-out;
-}
-
-.error-message {
-    margin-top: 15px;
-    padding: 12px;
-    background-color: #0a0909;
-    color: #c62828;
-    border-radius: 8px;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    animation: fadeIn 0.5s ease-out;
-}
-
-/* Vehicle entry styling */
-.vehicle-entry {
-    border: 1px solid #e1e1e1;
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 15px;
-    background-color: #fafafa;
-}
-
-.vehicle-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #090808;
-    padding-bottom: 10px;
-}
-
-.vehicle-header h3 {
-    margin: 0;
-    font-size: 18px;
-    color: #000000;
-}
-
-.remove-vehicle-btn {
-    background: #ffffff;
-    color: #c62828;
-    border: 1px solid #c62828;
-    border-radius: 50%;
-    width: 26px;
-    height: 26px;
+    transition: var(--transition);
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.2s;
-}
-
-.remove-vehicle-btn:hover {
-    background: #c62828;
-    color: #ffffff;
-}
-
-/* QR Codes container */
-.qr-codes-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+    gap: 0.5rem;
+  }
+  
+  .btn-primary {
+    background-color: var(--primary);
+    color: white;
     flex: 1;
-    min-width: 320px;
-}
-
-.qr-container {
-    width: 100%;
-    max-width: 300px;
-    padding: 25px;
-    border-radius: 15px;
-    background: #ffffff;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+  }
+  
+  .btn-secondary {
+    background-color: var(--dark-card);
+    color: var(--dark-text);
+    border: 1px solid var(--border-light);
+  }
+  
+  .btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .btn-icon {
+    padding: 0.5rem;
+    background: none;
+    color: var(--dark-muted);
+    border: none;
+  }
+  
+  .btn-icon:hover {
+    color: var(--primary-light);
+  }
+  
+  .alert {
+    padding: 1rem;
+    border-radius: var(--radius);
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .alert-success {
+    background-color: rgba(0, 230, 118, 0.1);
+    color: var(--success);
+    border: 1px solid var(--success);
+  }
+  
+  .alert-error {
+    background-color: rgba(255, 82, 82, 0.1);
+    color: var(--error);
+    border: 1px solid var(--error);
+  }
+  
+  .qr-section {
+    background-color: var(--dark-card);
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+  }
+  
+  .qr-section-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--primary-light);
+    text-align: center;
+  }
+  
+  .qr-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .qr-card {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius);
+    padding: 1rem;
+    border: 1px solid var(--border);
+    transition: var(--transition);
+    cursor: pointer;
+  }
+  
+  .qr-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .qr-card-header {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    position: relative;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary-light);
+  }
+  
+  .vehicle-icon {
+    font-size: 1.5rem;
+  }
+  
+  .qr-image-container {
+    margin: 0 auto;
+    width: 150px;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    border-radius: 8px;
     overflow: hidden;
-    border: 1px solid #e1e1e1;
-}
-
-.qr-container::before {
-    content: '';
-    position: absolute;
+  }
+  
+  .qr-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  
+  .qr-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  /* Modal Styles */
+  .modal-overlay {
+    position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 8px;
-    background: #000000;
-}
-
-.qr-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 25px;
-    width: 100%;
-}
-
-.qr-icon {
-    font-size: 24px;
-    margin-right: 12px;
-    background-color: #f5f5f5;
-    width: 45px;
-    height: 45px;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.qr-title {
-    color: #000000;
-    font-size: 20px;
-    font-weight: 600;
-    margin: 0;
-}
-
-.qr-code-wrapper {
-    margin-bottom: 20px;
-    padding: 15px;
-    background-color: white;
-    border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    border: 1px solid #e1e1e1;
-}
-
-.qr-image {
-    width: 200px;
-    height: 200px;
-}
-
-.qr-info {
-    width: 100%;
-    background-color: #f8f8f8;
-    border: 1px solid #e1e1e1;
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 20px;
-}
-
-.info-item {
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+  }
+  
+  .qr-modal {
+    background-color: var(--dark-card);
+    border-radius: var(--radius);
+    width: 90%;
+    max-width: 400px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  
+  .modal-header {
+    padding: 1.5rem;
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #e1e1e1;
-}
-
-.info-item:last-child {
-    margin-bottom: 0;
-    padding-bottom: 0;
-    border-bottom: none;
-}
-
-.info-label {
-    font-weight: 500;
-    color: #000000;
-}
-
-.info-value {
-    color: #000000;
-    font-weight: 600;
-}
-
-.download-link {
-    width: 100%;
-}
-
-.download-button {
-    width: 100%;
-    background: #000000;
-    color: white;
-    padding: 12px 20px;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .modal-header h3 {
+    margin: 0;
+    color: var(--primary-light);
+  }
+  
+  .modal-close {
+    background: none;
     border: none;
-    border-radius: 8px;
+    color: var(--dark-muted);
+    font-size: 1.5rem;
     cursor: pointer;
-    font-weight: 600;
-    transition: all 0.3s;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.download-button:hover {
-    background: #333333;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Responsive design for smaller screens */
-@media (max-width: 900px) {
-    .main-container {
-        flex-direction: column;
-        margin: 20px;
-    }
-
-    .qr-codes-container {
-        justify-content: center;
-    }
-}
-
-.result-box {
-    border: 1px solid #ccc;
-    padding: 15px;
-    margin-top: 20px;
+    transition: var(--transition);
+  }
+  
+  .modal-close:hover {
+    color: var(--error);
+    transform: rotate(90deg);
+  }
+  
+  .modal-body {
+    padding: 2rem;
+    text-align: center;
+  }
+  
+  .modal-qr-container {
+    width: 250px;
+    height: 250px;
+    margin: 0 auto 1.5rem;
+    background-color: white;
     border-radius: 8px;
-    background: #f9f9f9;
-}
-
-.error-message {
-    color: red;
-    margin-top: 10px;
-}
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  
+  .modal-qr-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  
+  .modal-info {
+    text-align: left;
+    margin-bottom: 1.5rem;
+  }
+  
+  .modal-info p {
+    margin: 0.5rem 0;
+  }
+  
+  .modal-footer {
+    padding: 1.5rem;
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .vehicle-reg-container {
+      grid-template-columns: 1fr;
+    }
+    
+    .qr-grid {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    
+    .form-actions {
+      flex-direction: column;
+    }
+  }

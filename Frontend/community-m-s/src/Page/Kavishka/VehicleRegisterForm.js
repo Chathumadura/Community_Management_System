@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { FaCar, FaMotorcycle, FaShuttleVan, FaBicycle, FaTimes, FaDownload } from "react-icons/fa";
+import { MdDirectionsCar, MdMoreHoriz } from "react-icons/md";
 import "../../Css/vehicaleReg.css";
+
 
 const VehicleRegisterForm = () => {
     const [vehicles, setVehicles] = useState([
@@ -10,6 +13,8 @@ const VehicleRegisterForm = () => {
     const [qrCodeUrls, setQrCodeUrls] = useState([]);
     const [successMessage, setSuccessMessage] = useState("");
     const [error, setError] = useState("");
+    const [showQRModal, setShowQRModal] = useState(false);
+    const [currentQRCode, setCurrentQRCode] = useState(null);
 
     useEffect(() => {
         const nameFromStorage = localStorage.getItem("userName");
@@ -52,15 +57,13 @@ const VehicleRegisterForm = () => {
             // Validate all vehicle numbers first
             for (const vehicle of vehicles) {
                 if (!vehicle.vehicleNumber || !vehicle.vehicleNumber.trim()) {
-                    setError("❌ All vehicle numbers must be filled");
+                    setError("All vehicle numbers must be filled");
                     return;
                 }
             }
 
             // Register each vehicle one by one
             for (const vehicle of vehicles) {
-                console.log("Registering vehicle:", vehicle); // Debug log
-
                 // Create QR code data object with all the information
                 const qrCodeData = {
                     residentId: userId,
@@ -81,160 +84,207 @@ const VehicleRegisterForm = () => {
             }
 
             setQrCodeUrls(registeredQrCodes);
-            setSuccessMessage("✅ Vehicles registered successfully!");
+            setSuccessMessage("Vehicles registered successfully!");
         } catch (err) {
-            setError("❌ Failed to register vehicles");
+            setError("Failed to register vehicles");
             console.error(err);
         }
     };
 
     const handleDownload = (url, vehicleNumber) => {
         fetch(url)
-            .then((response) => response.blob()) // Convert the image to blob
+            .then((response) => response.blob())
             .then((blob) => {
                 const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob); // Create an object URL for the blob
-                link.download = `vehicle_qr_code_${vehicleNumber}.png`; // Specify the filename
-                link.click(); // Trigger the download
+                link.href = URL.createObjectURL(blob);
+                link.download = `vehicle_qr_code_${vehicleNumber}.png`;
+                link.click();
             })
             .catch((err) => {
                 console.error("Failed to download QR code:", err);
             });
     };
 
+    const openQRModal = (qrCode) => {
+        setCurrentQRCode(qrCode);
+        setShowQRModal(true);
+    };
+
+    const closeQRModal = () => {
+        setShowQRModal(false);
+        setCurrentQRCode(null);
+    };
+
+    const getVehicleIcon = (type) => {
+        switch (type) {
+            case 'Car': return <MdDirectionsCar className="vehicle-icon" />;
+            case 'Motorbike': return <FaMotorcycle className="vehicle-icon" />;
+            case 'Van': return <FaShuttleVan className="vehicle-icon" />;
+            case 'Bicycle': return <FaBicycle className="vehicle-icon" />;
+            default: return <MdMoreHoriz className="vehicle-icon" />;
+        }
+    };
+
     return (
-        <div className="main-container">
-            <div className="form-container">
-                <div className="form-header">
-                    <div className="form-icon">🚗</div>
-                    <h2 className="form-title">Vehicle Registration</h2>
+        <div className="dark-theme">
+            <div className="vehicle-reg-container">
+                <div className="form-section">
+                    <div className="form-header">
+                        <div className="header-icon">
+                            <FaCar />
+                        </div>
+                        <h2>Vehicle Registration</h2>
+                        <p className="subtitle">Register your vehicles for secure parking access</p>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="registration-form">
+                        <div className="form-group">
+                            <label className="form-label">Resident Name</label>
+                            <input
+                                type="text"
+                                value={userName}
+                                className="form-input readonly"
+                                readOnly
+                            />
+                        </div>
+
+                        <input type="hidden" value={userId} />
+
+                        {vehicles.map((vehicle, index) => (
+                            <div key={index} className="vehicle-card">
+                                <div className="card-header">
+                                    <h3>Vehicle {index + 1}</h3>
+                                    {vehicles.length > 1 && (
+                                        <button
+                                            type="button"
+                                            className="remove-btn"
+                                            onClick={() => removeVehicle(index)}
+                                            aria-label="Remove vehicle"
+                                        >
+                                            <FaTimes />
+                                        </button>
+                                    )}
+                                </div>
+
+                                <div className="form-group">
+                                    <label className="form-label">Vehicle Number</label>
+                                    <input
+                                        type="text"
+                                        value={vehicle.vehicleNumber}
+                                        onChange={(e) => handleVehicleChange(index, "vehicleNumber", e.target.value)}
+                                        required
+                                        placeholder="ABC-1234"
+                                        className="form-input"
+                                        autoComplete="off"
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label className="form-label">Vehicle Type</label>
+                                    <select
+                                        value={vehicle.vehicleType}
+                                        onChange={(e) => handleVehicleChange(index, "vehicleType", e.target.value)}
+                                        required
+                                        className="form-select"
+                                    >
+                                        <option value="Car">Car</option>
+                                        <option value="Motorbike">Motorbike</option>
+                                        <option value="Van">Van</option>
+                                        <option value="Three-Wheeler">Three-Wheeler</option>
+                                        <option value="Bicycle">Bicycle</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                        ))}
+
+                        <div className="form-actions">
+                            <button
+                                type="button"
+                                className="btn btn-secondary"
+                                onClick={addVehicle}
+                            >
+                                + Add Vehicle
+                            </button>
+
+                            <button
+                                type="submit"
+                                className="btn btn-primary"
+                            >
+                                Register Vehicles
+                            </button>
+                        </div>
+
+                        {successMessage && (
+                            <div className="alert alert-success">{successMessage}</div>
+                        )}
+
+                        {error && (
+                            <div className="alert alert-error">{error}</div>
+                        )}
+                    </form>
                 </div>
 
-                <form onSubmit={handleSubmit} className="registration-form">
-                    <div className="form-group">
-                        <label>Resident Name</label>
-                        <input
-                            type="text"
-                            value={userName}
-                            className="input-readonly"
-                            readOnly
-                            placeholder="Name will appear here"
-                            style={{ color: "black" }}
-                        />
-                    </div>
-
-                    <input
-                        type="hidden"
-                        value={userId}
-                    />
-
-                    {vehicles.map((vehicle, index) => (
-                        <div key={index} className="vehicle-entry">
-                            <div className="vehicle-header">
-                                <h3>Vehicle {index + 1}</h3>
-                                {vehicles.length > 1 && (
-                                    <button
-                                        type="button"
-                                        className="remove-vehicle-btn"
-                                        onClick={() => removeVehicle(index)}
-                                    >
-                                        ✕
-                                    </button>
-                                )}
-                            </div>
-
-                            <div className="form-group">
-                                <label>Vehicle Number</label>
-                                <input
-                                    type="text"
-                                    value={vehicle.vehicleNumber}
-                                    onChange={(e) => handleVehicleChange(index, "vehicleNumber", e.target.value)}
-                                    required
-                                    placeholder="e.g., ABC-1234"
-                                    className="form-input"
-                                    autoComplete="off"
-                                    style={{ color: "black" }}
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label>Vehicle Type</label>
-                                <select
-                                    value={vehicle.vehicleType}
-                                    onChange={(e) => handleVehicleChange(index, "vehicleType", e.target.value)}
-                                    required
-                                    className="form-select"
-                                >
-                                    <option value="Car">Car</option>
-                                    <option value="Motorbike">Motorbike</option>
-                                    <option value="Van">Van</option>
-                                    <option value="Three-Wheeler">Three-Wheeler</option>
-                                    <option value="Bicycle">Bicycle</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
+                {qrCodeUrls.length > 0 && (
+                    <div className="qr-section">
+                        <h3 className="qr-section-title">Your Vehicle QR Codes</h3>
+                        <div className="qr-grid">
+                            {qrCodeUrls.map((qrCode, index) => (
+                                <div key={index} className="qr-card">
+                                    <div className="qr-card-header">
+                                        {getVehicleIcon(qrCode.vehicleType)}
+                                        <span>{qrCode.vehicleType}</span>
+                                    </div>
+                                    <div className="qr-image-container" onClick={() => openQRModal(qrCode)}>
+                                        <img src={qrCode.qrCodeUrl} alt="QR Code" />
+                                    </div>
+                                    <div className="qr-card-footer">
+                                        <span>{qrCode.vehicleNumber}</span>
+                                        <button 
+                                            className="btn btn-icon"
+                                            onClick={() => handleDownload(qrCode.qrCodeUrl, qrCode.vehicleNumber)}
+                                            aria-label="Download QR code"
+                                        >
+                                            <FaDownload />
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-                    ))}
-
-                    <div className="button-group">
-                        <button
-                            type="button"
-                            className="add-vehicle-button"
-                            onClick={addVehicle}
-                        >
-                            + Add Another Vehicle
-                        </button>
-
-                        <button
-                            type="submit"
-                            className="submit-button"
-                        >
-                            Register Vehicles
-                        </button>
                     </div>
-
-                    {successMessage && (
-                        <div className="success-message">{successMessage}</div>
-                    )}
-
-                    {error && (
-                        <div className="error-message">{error}</div>
-                    )}
-                </form>
+                )}
             </div>
 
-            <div className="qr-codes-container">
-                {qrCodeUrls.map((qrCode, index) => (
-                    <div key={index} className="qr-container">
-                        <div className="qr-header">
-                            <div className="qr-icon">🔒</div>
-                            <h4 className="qr-title">Vehicle QR Code</h4>
+            {/* QR Code Modal */}
+            {showQRModal && currentQRCode && (
+                <div className="modal-overlay">
+                    <div className="qr-modal">
+                        <div className="modal-header">
+                            <h3>Vehicle QR Code</h3>
+                            <button className="modal-close" onClick={closeQRModal}>
+                                <FaTimes />
+                            </button>
                         </div>
-
-                        <div className="qr-code-wrapper">
-                            <img src={qrCode.qrCodeUrl} alt="QR Code" className="qr-image" />
-                        </div>
-
-                        <div className="qr-info">
-                            <div className="info-item">
-                                <span className="info-label">Vehicle:</span>
-                                <span className="info-value">{qrCode.vehicleType}</span>
+                        <div className="modal-body">
+                            <div className="modal-qr-container">
+                                <img src={currentQRCode.qrCodeUrl} alt="QR Code" />
                             </div>
-                            <div className="info-item">
-                                <span className="info-label">Number:</span>
-                                <span className="info-value">{qrCode.vehicleNumber}</span>
+                            <div className="modal-info">
+                                <p><strong>Type:</strong> {currentQRCode.vehicleType}</p>
+                                <p><strong>Number:</strong> {currentQRCode.vehicleNumber}</p>
                             </div>
                         </div>
-
-                        <button
-                            className="download-button"
-                            onClick={() => handleDownload(qrCode.qrCodeUrl, qrCode.vehicleNumber)}
-                        >
-                            Download QR Code
-                        </button>
+                        <div className="modal-footer">
+                            <button 
+                                className="btn btn-primary"
+                                onClick={() => handleDownload(currentQRCode.qrCodeUrl, currentQRCode.vehicleNumber)}
+                            >
+                                <FaDownload /> Download QR Code
+                            </button>
+                        </div>
                     </div>
-                ))}
-            </div>
+                </div>
+            )}
         </div>
     );
 };

@@ -4,14 +4,14 @@ import '../Css/navBar.css';
 import { FaUser, FaSignOutAlt } from 'react-icons/fa';
 import logo from '../image/logo.png';
 
-function Navbar({ isLoggedIn, onLogout }) {
+function Navbar(){
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    onLogout();
-    navigate('/login');
+    localStorage.removeItem("token"); 
+    navigate('/'); 
   };
 
   const toggleMobileMenu = () => {
@@ -31,6 +31,38 @@ function Navbar({ isLoggedIn, onLogout }) {
     closeMenus();
     navigate('/productList');
   };
+
+  const navigateToProfile = () => {
+    closeMenus();
+    navigate('/profile');
+  };
+
+  const styles = {
+    logoutBtn: {
+      backgroundColor: '#ff4d4f',
+      color: '#fff',
+      padding: '10px 20px',
+      fontSize: '16px',
+      border: 'none',
+      borderRadius: '5px',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+    },
+    profileBtn: {
+      backgroundColor: '#1890ff',
+      color: '#fff',
+      padding: '10px 20px',
+      fontSize: '16px',
+      border: 'none',
+      borderRadius: '5px',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      marginRight: '10px'
+    }
+  };
+  
 
   return (
     <nav className="navbar">
@@ -58,7 +90,24 @@ function Navbar({ isLoggedIn, onLogout }) {
             </Link>
           </li>
 
-          
+          <li className={`nav-item dropdown ${isDropdownOpen ? 'active' : ''}`}>
+            <span className="nav-links dropdown-toggle" onClick={toggleDropdown}>
+              Features ▾
+            </span>
+            <ul className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`}>
+              <li>
+                <span className="dropdown-link" onClick={navigateToMarketplace}>
+                  Marketplace
+                </span>
+              </li>
+              
+              <li>
+                <Link to="/vehicleRegisterForm" className="dropdown-link" onClick={closeMenus}>
+                Vehicle Registration
+                </Link>
+              </li>
+            </ul>
+          </li>
 
           <li className="nav-item">
             <Link to="/contact" className="nav-links" onClick={closeMenus}>
@@ -68,18 +117,14 @@ function Navbar({ isLoggedIn, onLogout }) {
         </ul>
 
         <div className="navbar-buttons">
-          <Link to="/signup" className="get-started-btn" onClick={closeMenus}>
-            Get Started
-          </Link>
-          {isLoggedIn ? (
-            <button className="login-btn" onClick={handleLogout}>
-              <FaSignOutAlt /> Logout
-            </button>
-          ) : (
-            <Link to="/login" className="login-btn" onClick={closeMenus}>
-              <FaUser /> Login
-            </Link>
-          )}
+          <button style={styles.profileBtn} onClick={navigateToProfile}>
+            <FaUser style={{ marginRight: '8px' }} />
+            Profile
+          </button>
+          <button style={styles.logoutBtn} onClick={handleLogout}>
+            <FaSignOutAlt style={{ marginRight: '8px' }} />
+            Logout
+          </button>
         </div>
       </div>
     </nav>

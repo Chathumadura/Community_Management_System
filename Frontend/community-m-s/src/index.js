@@ -25,6 +25,7 @@ import EmployeeProfile from './Page/Rasindu/EmployeeProfile.js';
 import QRCodePage from "./Page/Rasindu/AttendanceForm.js";
 import MonthlySalaryReport from './Page/Rasindu/MonthlySalaryReport.js';
 import EmployeeSalaryReport from "./Page/Rasindu/EmployeeSalaryReport.js";
+import UserProfile from "./Page/Userprofile.js";
 
 
 
@@ -46,6 +47,7 @@ root.render(
       <Route path='/security' element={<Security />} />
       <Route path='/demoparking' element={<Demoparking />} />
       <Route path='/leave' element={<LeaveTime />} />
+      <Route path='/profile' element={< UserProfile/>} />
 
 
 
