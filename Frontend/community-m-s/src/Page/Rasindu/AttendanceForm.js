@@ -1,82 +1,94 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Html5Qrcode } from 'html5-qrcode';
 import { useNavigate } from 'react-router-dom';
-import { QrReader } from 'react-qr-reader';  // Use named import
 import axios from 'axios';
-import '../../Css/Rasindu/AttendanceForm.css'; // Create styling if needed
+import '../../Css/Rasindu/AttendanceForm.css';
 
 const QrScan = () => {
-  const [scannedId, setScannedId] = useState('');
   const [message, setMessage] = useState('');
   const [success, setSuccess] = useState(false);
   const [checkInDone, setCheckInDone] = useState(false);
   const [checkInTime, setCheckInTime] = useState(null);
-  const [isCameraActive, setIsCameraActive] = useState(true);
+  const qrRef = useRef(null);
+  const html5QrCodeRef = useRef(null);
   const navigate = useNavigate();
 
-  const handleResult = async (result) => {
-    if (result && result.text && !scannedId) {
-      try {
-        const parsed = JSON.parse(result.text);
-        const empId = parsed.employeeId;
+  const handleScan = async (decodedText) => {
+    try {
+      const parsed = JSON.parse(decodedText);
+      const empId = parsed.employeeId;
+      const now = new Date();
 
-        const now = new Date();
-
-        if (checkInDone && checkInTime && (now - checkInTime) < 30000) {
-          setMessage("Please wait at least 30 seconds before check-out.");
-          setSuccess(false);
-          return;
-        }
-
-        setScannedId(empId);
-        const res = await axios.post("http://localhost:8070/attendance/mark", { empId });
-
-        setMessage(res.data.message);
-        setSuccess(true);
-
-        if (res.data.message === 'Check-in successful') {
-          setCheckInDone(true);
-          setCheckInTime(now);
-        } else if (res.data.message === 'Check-out successful') {
-          setCheckInDone(false);
-          setCheckInTime(null);
-        }
-
-        setTimeout(() => {
-          setScannedId('');
-          setMessage('');
-        }, 5000);
-
-      } catch (err) {
-        setMessage("Invalid QR or Attendance Error");
+      if (checkInDone && checkInTime && (now - checkInTime) < 30000) {
+        setMessage("Please wait at least 30 seconds before check-out.");
         setSuccess(false);
-        console.error(err);
+        return;
       }
+
+      const res = await axios.post("http://localhost:8070/attendance/mark", { empId });
+
+      setMessage(res.data.message);
+      setSuccess(true);
+
+      if (res.data.message === 'Check-in successful') {
+        setCheckInDone(true);
+        setCheckInTime(now);
+      } else if (res.data.message === 'Check-out successful') {
+        setCheckInDone(false);
+        setCheckInTime(null);
+      }
+
+      setTimeout(() => {
+        setMessage('');
+      }, 5000);
+
+    } catch (err) {
+      console.error("QR Error:", err);
+      setMessage("Invalid QR or Attendance Error");
+      setSuccess(false);
     }
   };
 
-  const handleError = (err) => {
-    console.error("QR Scan Error:", err);
-    setMessage("Camera Error");
-    setSuccess(false);
-  };
+  useEffect(() => {
+    const scannerId = "reader";
+    html5QrCodeRef.current = new Html5Qrcode(scannerId);
+
+    Html5Qrcode.getCameras().then((devices) => {
+      if (devices && devices.length) {
+        const cameraId = devices[0].id;
+
+        html5QrCodeRef.current.start(
+          cameraId,
+          {
+            fps: 10,
+            qrbox: 250,
+          },
+          handleScan,
+          (err) => {
+            console.warn("Scan error:", err);
+          }
+        );
+      }
+    }).catch(err => {
+      console.error("Camera error:", err);
+      setMessage("Camera not accessible");
+      setSuccess(false);
+    });
+
+    return () => {
+      if (html5QrCodeRef.current) {
+        html5QrCodeRef.current.stop().then(() => {
+          html5QrCodeRef.current.clear();
+        }).catch(err => console.error("Stop error:", err));
+      }
+    };
+  }, []);
 
   return (
     <div className="qr-scan-containerRa">
       <button onClick={() => navigate(-1)} className="qr-scan-back-btnRa">&larr; Back</button>
       <h2>Scan Employee QR Code</h2>
-
-      <div className="qr-scannerRa">
-        {isCameraActive && (
-          <QrReader
-            delay={300}
-            onError={handleError}
-            onResult={handleResult}
-            constraints={{ facingMode: 'environment' }}
-            style={{ width: '100%' }}
-          />
-        )}
-        <div className="scan-lineRa"></div>
-      </div>
+      <div id="reader" ref={qrRef} style={{ width: "300px", margin: "auto" }}></div>
 
       {message && (
         <div className={`qr-scan-messageRa ${success ? 'success' : 'error'}`}>

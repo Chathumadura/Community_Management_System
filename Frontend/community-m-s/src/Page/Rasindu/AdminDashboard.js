@@ -64,6 +64,20 @@ export default function AdminDashboard() {
                                 Attendance
                             </button>
                         </li>
+
+                        <li>
+                            <button className="menu-itemRa" onClick={() => navigate("/MDetailsAdminSide")}>
+                                Maintenance
+                            </button>
+                        </li>
+
+                        <li>
+                            <button className="menu-itemRa" onClick={() => navigate("/CDetailsAdminSide")}>
+                                Complaints
+                            </button>
+                        </li>
+
+
                     </ul>
                 </div>
                 <button className="logout-buttonRa" onClick={() => navigate("/maindashboard/")}>
